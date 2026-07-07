@@ -2,7 +2,7 @@
   "name": "invisible-geeks-frontend-challenge",
   "private": true,
   "version": "1.0.0",
-  "description": "Prueba técnica de frontend de Invisible Geeks — replicar un componente de Figma en Vue 3 + Tailwind.",
+  "description": "Invisible Geeks frontend technical test — replicate a Figma component in Vue 3 + Tailwind.",
   "type": "module",
   "scripts": {
     "predev": "node scripts/challenge.mjs start --if-missing",

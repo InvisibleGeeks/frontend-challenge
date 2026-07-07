@@ -1,14 +1,14 @@
 <script setup>
-// 🎯 Tu tarea: construí acá el componente HeroSplitMedia (variante "split-media").
+// 🎯 Your task: build the HeroSplitMedia component here (variant "split-media").
 //
-// Sos libre de estructurar el proyecto como quieras: creá los componentes,
-// carpetas y props que consideres. Esto es solo el punto de montaje.
+// You're free to structure the project however you want: create the components,
+// folders and props you see fit. This is just the mount point.
 //
-// Assets disponibles (carpeta public/, servidos desde la raíz):
-//   • Imagen hero  → /assets/images/hero-split-media.svg   (reemplazable por tu export de Figma)
-//   • Logo vertical → /assets/logos/health-logo.svg
+// Available assets (public/ folder, served from the root):
+//   • Hero image  → /assets/images/hero-split-media.svg   (replaceable with your Figma export)
+//   • Vertical logo → /assets/logos/health-logo.svg
 //
-// Diseño (fuente de verdad): ver DESIGN.md → link a Figma + specs.
+// Design (source of truth): see DESIGN.md → Figma link + specs.
 </script>
 
 <template>
@@ -17,10 +17,10 @@
       <img src="/assets/logos/health-logo.svg" alt="" class="w-10 h-10 mx-auto mb-6" />
       <h1 class="text-2xl font-semibold mb-2">Invisible Geeks · Frontend Challenge</h1>
       <p class="text-gray-500">
-        Reemplazá este contenido por tu implementación del componente
-        <code>HeroSplitMedia</code> (variante <code>split-media</code>).
+        Replace this content with your implementation of the
+        <code>HeroSplitMedia</code> component (variant <code>split-media</code>).
         <br />
-        Leé <strong>CHALLENGE.md</strong> para el brief y <strong>DESIGN.md</strong> para el diseño.
+        Read <strong>CHALLENGE.md</strong> for the brief and <strong>DESIGN.md</strong> for the design.
       </p>
     </div>
   </main>

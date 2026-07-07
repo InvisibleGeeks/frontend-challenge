@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 /**
- * Tracking de tiempo del challenge vía commits de git.
+ * Challenge time tracking via git commits.
  *
- *   node scripts/challenge.mjs start [--if-missing]  → registra el INICIO (commit "⏱️ START")
- *   node scripts/challenge.mjs submit                → registra la ENTREGA (commit "✅ SUBMIT")
- *   node scripts/challenge.mjs time                  → imprime el tiempo START → SUBMIT
+ *   node scripts/challenge.mjs start [--if-missing]  → records the START (commit "⏱️ START")
+ *   node scripts/challenge.mjs submit                → records the SUBMISSION (commit "✅ SUBMIT")
+ *   node scripts/challenge.mjs time                  → prints the START → SUBMIT time
  *
- * El primer commit marca la hora de inicio y el último la de fin.
+ * The first commit marks the start time and the last one the end time.
  */
 import { execSync } from 'node:child_process'
 
@@ -35,7 +35,7 @@ function gitUserConfigured() {
   }
 }
 
-/** Subjects de todos los commits (vacío si aún no hay ninguno). */
+/** Subjects of all commits (empty if there are none yet). */
 function commitSubjects() {
   try {
     return sh('git log --format=%s').split('\n').filter(Boolean)
@@ -49,32 +49,32 @@ function hasCommit(keyword) {
 }
 
 function start({ ifMissing }) {
-  // En modo --if-missing (hook predev) nunca frenamos el arranque de la app:
-  // si algo falla, avisamos y salimos con 0.
+  // In --if-missing mode (predev hook) we never block the app from starting:
+  // if something fails, we warn and exit with 0.
   if (!isGitRepo()) {
-    const msg = 'ℹ️  No es un repo git — inicializá con `git init` para trackear el tiempo.'
+    const msg = 'ℹ️  Not a git repo — initialize with `git init` to track time.'
     if (ifMissing) return console.warn(msg)
     console.error(msg)
     process.exit(1)
   }
   if (!gitUserConfigured()) {
     const msg =
-      'ℹ️  Configurá git antes de empezar:\n' +
-      '     git config user.name  "Tu Nombre"\n' +
-      '     git config user.email "tu@email.com"'
+      'ℹ️  Configure git before starting:\n' +
+      '     git config user.name  "Your Name"\n' +
+      '     git config user.email "you@email.com"'
     if (ifMissing) return console.warn(msg)
     console.error(msg)
     process.exit(1)
   }
-  if (ifMissing && hasCommit('START')) return // ya arrancó, no duplicar
+  if (ifMissing && hasCommit('START')) return // already started, don't duplicate
 
   sh(`git commit --allow-empty -m "${START_MSG}"`)
-  console.log('⏱️  Inicio registrado. ¡Arranca el reloj! (commit "⏱️ START")')
+  console.log('⏱️  Start recorded. The clock is running! (commit "⏱️ START")')
 }
 
 function submit() {
   if (!isGitRepo() || !gitUserConfigured()) {
-    console.error('ℹ️  Necesitás un repo git configurado para registrar la entrega.')
+    console.error('ℹ️  You need a configured git repo to record the submission.')
     process.exit(1)
   }
   sh('git add -A')
@@ -83,17 +83,17 @@ function submit() {
   } catch {
     sh(`git commit --allow-empty -m "${SUBMIT_MSG}"`)
   }
-  console.log('✅ Entrega registrada (commit "✅ SUBMIT"). Corré `npm run challenge:time` para ver el total.')
+  console.log('✅ Submission recorded (commit "✅ SUBMIT"). Run `npm run challenge:time` to see the total.')
 }
 
 function time() {
   if (!isGitRepo()) {
-    console.error('ℹ️  No es un repo git.')
+    console.error('ℹ️  Not a git repo.')
     process.exit(1)
   }
   let rows
   try {
-    // Orden cronológico (más viejo primero): fecha ISO + subject.
+    // Chronological order (oldest first): ISO date + subject.
     rows = sh('git log --reverse --format=%aI%x09%s')
       .split('\n')
       .filter(Boolean)
@@ -102,7 +102,7 @@ function time() {
         return { date, subject: rest.join('\t') }
       })
   } catch {
-    console.error('ℹ️  Todavía no hay commits.')
+    console.error('ℹ️  No commits yet.')
     process.exit(1)
   }
 
@@ -110,12 +110,12 @@ function time() {
   const submitRow = [...rows].reverse().find((r) => r.subject.includes(PREFIX) && r.subject.includes('SUBMIT'))
 
   if (!startRow) {
-    console.error('⚠️  No encontré el commit "⏱️ START". Corré `npm run challenge:start` (o `npm run dev`).')
+    console.error('⚠️  Could not find the "⏱️ START" commit. Run `npm run challenge:start` (or `npm run dev`).')
     process.exit(1)
   }
 
   const end = submitRow ?? rows[rows.length - 1]
-  const endLabel = submitRow ? '✅ SUBMIT' : `último commit ("${end.subject}")`
+  const endLabel = submitRow ? '✅ SUBMIT' : `last commit ("${end.subject}")`
 
   const ms = new Date(end.date).getTime() - new Date(startRow.date).getTime()
   const totalMin = Math.max(0, Math.round(ms / 60000))
@@ -123,13 +123,13 @@ function time() {
   const m = totalMin % 60
 
   console.log('──────────────────────────────────────────')
-  console.log(`  Inicio (⏱️ START) : ${startRow.date}`)
-  console.log(`  Fin (${endLabel}) : ${end.date}`)
-  console.log(`  Tiempo total      : ${h}h ${m}m  (${totalMin} min)`)
+  console.log(`  Start (⏱️ START) : ${startRow.date}`)
+  console.log(`  End (${endLabel}) : ${end.date}`)
+  console.log(`  Total time       : ${h}h ${m}m  (${totalMin} min)`)
   console.log('──────────────────────────────────────────')
   if (!submitRow) {
-    console.log('  Nota: aún no hay commit "✅ SUBMIT"; usé el último commit como fin.')
-    console.log('        Al terminar, corré `npm run challenge:submit`.')
+    console.log('  Note: there is no "✅ SUBMIT" commit yet; used the last commit as the end.')
+    console.log('        When you finish, run `npm run challenge:submit`.')
   }
 }
 
@@ -147,6 +147,6 @@ switch (cmd) {
     time()
     break
   default:
-    console.log('Uso: node scripts/challenge.mjs <start|submit|time> [--if-missing]')
+    console.log('Usage: node scripts/challenge.mjs <start|submit|time> [--if-missing]')
     process.exit(1)
 }

@@ -1,8 +1,8 @@
 import { createApp } from 'vue'
 import './style.css'
 
-// Fuentes del design system (offline, vía @fontsource).
-// Bricolage Grotesque → títulos · Manrope → cuerpo.
+// Design system fonts (offline, via @fontsource).
+// Bricolage Grotesque → titles · Manrope → body.
 import '@fontsource/bricolage-grotesque/400.css'
 import '@fontsource/bricolage-grotesque/600.css'
 import '@fontsource/bricolage-grotesque/700.css'
